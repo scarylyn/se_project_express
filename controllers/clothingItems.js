@@ -65,7 +65,25 @@ const likeItem = (req, res) => {
     req.params.itemId,
     { $addToSet: { likes: userLikes } },
     { new: true }
-  );
+  )
+    .orFail()
+    .then((item) => res.status(200).send(item))
+    .catch((err) => {
+      console.error(err);
+      if (err.name === "ValidationError") {
+        return res
+          .status(ERROR_CODES.BAD_REQUEST)
+          .send({ message: ERROR_MESSAGES.INVALID_DATA });
+      } else if (err.name === "DocumentNotFoundError") {
+        return res
+          .status(ERROR_CODES.NOT_FOUND)
+          .send({ message: ERROR_MESSAGES.RESOURCE_NOT_FOUND });
+      } else if (err.name === "CastError") {
+        return res
+          .status(ERROR_CODES.BAD_REQUEST)
+          .send({ message: ERROR_MESSAGES.INVALID_DATA });
+      }
+    });
 };
 
 const dislikeItem = (req, res) => {
@@ -74,7 +92,25 @@ const dislikeItem = (req, res) => {
     req.params.itemId,
     { $pull: { likes: userLikes } },
     { new: true }
-  );
+  )
+    .orFail()
+    .then((item) => res.status(200).send(item))
+    .catch((err) => {
+      console.error(err);
+      if (err.name === "ValidationError") {
+        return res
+          .status(ERROR_CODES.BAD_REQUEST)
+          .send({ message: ERROR_MESSAGES.INVALID_DATA });
+      } else if (err.name === "DocumentNotFoundError") {
+        return res
+          .status(ERROR_CODES.NOT_FOUND)
+          .send({ message: ERROR_MESSAGES.RESOURCE_NOT_FOUND });
+      } else if (err.name === "CastError") {
+        return res
+          .status(ERROR_CODES.BAD_REQUEST)
+          .send({ message: ERROR_MESSAGES.INVALID_DATA });
+      }
+    });
 };
 
 module.exports = {
