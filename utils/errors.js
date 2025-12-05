@@ -34,4 +34,5 @@ const ERRORS = {
 module.exports = {
   ERROR_CODES,
   ERROR_MESSAGES,
+  ERRORS,
 };

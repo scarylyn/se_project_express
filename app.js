@@ -1,11 +1,12 @@
 const express = require("express");
 const mongoose = require("mongoose");
+
 const app = express();
 const { PORT = 3001 } = process.env;
-const mainRouter = require("./routes/index.js");
+const mainRouter = require("./routes/index");
 
 mongoose
-  .connect("mongodb://127.0.0.1:27017/wtwr_db")
+  .connect("mongodb://localhost:27017/wtwr_db")
   .then(() => {
     console.log("Connected to DB");
   })
@@ -15,7 +16,7 @@ app.use(express.json());
 
 app.use((req, res, next) => {
   req.user = {
-    _id: "6932a0dd6924da9623826353", // this is the _id of the test user, Tina Test
+    _id: "6932a0dd6924da9623826353", // this is the _id of the test user, "Tina Test"
   };
   next();
 });

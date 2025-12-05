@@ -2,14 +2,10 @@ const ClothingItem = require("../models/clothingItem");
 const { ERROR_CODES, ERROR_MESSAGES } = require("../utils/errors");
 
 const createItem = (req, res) => {
-  console.log(req);
-  console.log(req.body);
-
   const { name, weather, imageUrl } = req.body;
 
   ClothingItem.create({ name, weather, imageUrl })
     .then((item) => {
-      console.log(item);
       res.status(200).send(item);
     })
     .catch((err) => {
@@ -37,7 +33,6 @@ const getItems = (req, res) => {
 
 const deleteItem = (req, res) => {
   const { itemId } = req.params;
-  console.log(itemId);
 
   ClothingItem.findByIdAndDelete(itemId)
     .orFail()
@@ -48,7 +43,8 @@ const deleteItem = (req, res) => {
         return res
           .status(ERROR_CODES.NOT_FOUND)
           .send({ message: ERROR_MESSAGES.RESOURCE_NOT_FOUND });
-      } else if (err.name === "CastError") {
+      }
+      if (err.name === "CastError") {
         return res
           .status(ERROR_CODES.BAD_REQUEST)
           .send({ message: ERROR_MESSAGES.INVALID_DATA });
@@ -74,15 +70,20 @@ const likeItem = (req, res) => {
         return res
           .status(ERROR_CODES.BAD_REQUEST)
           .send({ message: ERROR_MESSAGES.INVALID_DATA });
-      } else if (err.name === "DocumentNotFoundError") {
+      }
+      if (err.name === "DocumentNotFoundError") {
         return res
           .status(ERROR_CODES.NOT_FOUND)
           .send({ message: ERROR_MESSAGES.RESOURCE_NOT_FOUND });
-      } else if (err.name === "CastError") {
+      }
+      if (err.name === "CastError") {
         return res
           .status(ERROR_CODES.BAD_REQUEST)
           .send({ message: ERROR_MESSAGES.INVALID_DATA });
       }
+      return res
+        .status(ERROR_CODES.INTERNAL_SERVER_ERROR)
+        .send({ message: ERROR_MESSAGES.SERVER_ERROR });
     });
 };
 
@@ -101,22 +102,26 @@ const dislikeItem = (req, res) => {
         return res
           .status(ERROR_CODES.BAD_REQUEST)
           .send({ message: ERROR_MESSAGES.INVALID_DATA });
-      } else if (err.name === "DocumentNotFoundError") {
+      }
+      if (err.name === "DocumentNotFoundError") {
         return res
           .status(ERROR_CODES.NOT_FOUND)
           .send({ message: ERROR_MESSAGES.RESOURCE_NOT_FOUND });
-      } else if (err.name === "CastError") {
+      }
+      if (err.name === "CastError") {
         return res
           .status(ERROR_CODES.BAD_REQUEST)
           .send({ message: ERROR_MESSAGES.INVALID_DATA });
       }
+      return res
+        .status(ERROR_CODES.INTERNAL_SERVER_ERROR)
+        .send({ message: ERROR_MESSAGES.SERVER_ERROR });
     });
 };
 
 module.exports = {
   createItem,
   getItems,
-  likeItem,
   deleteItem,
   likeItem,
   dislikeItem,

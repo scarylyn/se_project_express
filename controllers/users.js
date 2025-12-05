@@ -11,7 +11,6 @@ const getUsers = (req, res) => {
         .send({ message: ERROR_MESSAGES.SERVER_ERROR });
     });
 };
-// TODO - there is a task to not use the hard coded status numbers
 
 const createUser = (req, res) => {
   const { name, avatar } = req.body;
@@ -42,7 +41,8 @@ const getUser = (req, res) => {
         return res
           .status(ERROR_CODES.NOT_FOUND)
           .send({ message: ERROR_MESSAGES.RESOURCE_NOT_FOUND });
-      } else if (err.name === "CastError") {
+      }
+      if (err.name === "CastError") {
         return res
           .status(ERROR_CODES.BAD_REQUEST)
           .send({ message: ERROR_MESSAGES.INVALID_DATA });
