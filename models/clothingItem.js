@@ -24,7 +24,8 @@ const clothingSchema = new mongoose.Schema({
     },
   },
   owner: {
-    required: true,
+    // required: true,
+    // adding required breaks everything - figure out why
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
