@@ -11,10 +11,6 @@ mongoose
   })
   .catch(console.error);
 
-// app.get("/", (req, res) => {
-//   res.send("Testing...");
-// });
-
 app.use(express.json());
 app.use("/", mainRouter);
 

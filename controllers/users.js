@@ -8,7 +8,7 @@ const getUsers = (req, res) => {
       return res.status(500).send({ message: err.message });
     });
 };
-// TODO - there is a task to not use the hard coded numbers above
+// TODO - there is a task to not use the hard coded status numbers
 
 const createUser = (req, res) => {
   const { name, avatar } = req.body;
