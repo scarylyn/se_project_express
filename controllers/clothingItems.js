@@ -2,9 +2,9 @@ const ClothingItem = require("../models/clothingItem");
 const { ERROR_CODES, ERROR_MESSAGES } = require("../utils/errors");
 
 const createItem = (req, res) => {
-  const { name, weather, imageUrl } = req.body;
+  const { name, weather, imageUrl, owner } = req.body;
 
-  ClothingItem.create({ name, weather, imageUrl })
+  ClothingItem.create({ name, weather, imageUrl, owner })
     .then((item) => {
       res.status(200).send(item);
     })
@@ -25,6 +25,7 @@ const getItems = (req, res) => {
   ClothingItem.find({})
     .then((items) => res.status(200).send(items))
     .catch((err) => {
+      console.error(err);
       res
         .status(ERROR_CODES.INTERNAL_SERVER_ERROR)
         .send({ message: ERROR_MESSAGES.SERVER_ERROR });
@@ -36,7 +37,7 @@ const deleteItem = (req, res) => {
 
   ClothingItem.findByIdAndDelete(itemId)
     .orFail()
-    .then((item) => res.status(200).send({}))
+    .then(() => res.status(200).send({}))
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
