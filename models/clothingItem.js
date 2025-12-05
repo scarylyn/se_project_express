@@ -25,7 +25,7 @@ const clothingSchema = new mongoose.Schema({
   },
   owner: {
     required: true,
-    // owner - required, link to the item author's model of the ObjectID type
+    // owner - link to the item author's model of the ObjectID type
   },
   likes: {
     // likes - empty by default, a list of users who liked the item

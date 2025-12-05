@@ -15,6 +15,7 @@ mongoose
 //   res.send("Testing...");
 // });
 
+app.use(express.json());
 app.use("/", mainRouter);
 
 app.listen(PORT, () => {
