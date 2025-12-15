@@ -1,5 +1,10 @@
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const validator = require("validator");
+
 const User = require("../models/user");
 const { ERROR_CODES, ERROR_MESSAGES } = require("../utils/errors");
+const { JWT_SECRET } = require("../utils/config");
 
 const getUsers = (req, res) => {
   User.find({})
@@ -13,10 +18,12 @@ const getUsers = (req, res) => {
 };
 
 const createUser = (req, res) => {
-  const { name, avatar } = req.body;
+  const { email, name, avatar } = req.body;
 
-  User.create({ name, avatar })
-    .then((user) => res.status(201).send(user))
+  bcrypt
+    .hash(req.body.password, 10)
+    .then((hash) => User.create({ email, password: hash, name, avatar }))
+    .then((user) => res.status(201).send({ email, name, avatar }))
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
@@ -24,14 +31,19 @@ const createUser = (req, res) => {
           .status(ERROR_CODES.BAD_REQUEST)
           .send({ message: ERROR_MESSAGES.INVALID_DATA });
       }
+      if (err.code === 11000) {
+        return res
+          .status(ERROR_CODES.CONFLICT)
+          .send({ message: ERROR_MESSAGES.DUPLICATE_EMAIL });
+      }
       return res
         .status(ERROR_CODES.INTERNAL_SERVER_ERROR)
         .send({ message: ERROR_MESSAGES.SERVER_ERROR });
     });
 };
 
-const getUser = (req, res) => {
-  const { userId } = req.params;
+const getCurrentUser = (req, res) => {
+  const { userId } = req.user;
   User.findById(userId)
     .orFail()
     .then((user) => res.status(200).send(user))
@@ -53,4 +65,33 @@ const getUser = (req, res) => {
     });
 };
 
-module.exports = { getUsers, createUser, getUser };
+const login = (req, res) => {
+  const { email, password } = req.body;
+
+  if (!validator.isEmail(email)) {
+    return res.status(400).send({ message: "Invalid email format" });
+  }
+
+  return User.findUserByCredentials(email, password)
+    .then((user) => {
+      const token = jwt.sign(
+        { _id: user._id },
+        process.env.JWT_SECRET || JWT_SECRET,
+        { expiresIn: "7d" }
+      );
+      return res.status(200).send({ token });
+    })
+    .catch((err) => {
+      if (err.name === "ValidationError") {
+        return res
+          .status(ERROR_CODES.BAD_REQUEST)
+          .send({ message: ERROR_MESSAGES.INVALID_DATA });
+      }
+      console.log(err);
+      return res
+        .status(ERROR_CODES.INTERNAL_SERVER_ERROR)
+        .send({ message: ERROR_MESSAGES.SERVER_ERROR });
+    });
+};
+
+module.exports = { getUsers, createUser, getCurrentUser, login };
