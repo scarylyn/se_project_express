@@ -7,7 +7,7 @@ const createItem = (req, res) => {
 
   ClothingItem.create({ name, weather, imageUrl, owner })
     .then((item) => {
-      res.status(200).send(item);
+      res.status(201).send(item);
     })
     .catch((err) => {
       console.error(err);
@@ -51,7 +51,7 @@ const deleteItem = (req, res) => {
       }
       return ClothingItem.findByIdAndDelete(itemId);
     })
-    .then(() => res.status(200).send({}))
+    .then(() => res.status(200).send({ message: "Item has been deleted" }))
     .catch((err) => {
       console.error(err);
       if (err.name === "ForbiddenError") {

@@ -77,11 +77,11 @@ const loginUser = (req, res) => {
       return res.status(200).send({ token });
     })
     .catch((err) => {
-      console.log(err);
+      console.error(err);
       if (err.name === "ValidationError") {
         return res
           .status(ERROR_CODES.BAD_REQUEST)
-          .send({ message: ERROR_MESSAGES.DUPLICATE_EMAIL });
+          .send({ message: ERROR_MESSAGES.INVALID_DATA });
       }
       if (err.name === "InvalidCredentials") {
         return res
@@ -109,7 +109,7 @@ const updateUser = (req, res) => {
           .status(ERROR_CODES.NOT_FOUND)
           .send({ message: "User not found" });
       }
-      return res.status(200).send(user);
+      return res.send(user);
     })
     .catch((err) => {
       console.error(err);
