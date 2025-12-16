@@ -41,6 +41,7 @@ const deleteItem = (req, res) => {
     if (item.owner._id !== user) {
       return res.status(403).send({ message: "Forbidden" });
     }
+    return;
   });
 
   ClothingItem.findByIdAndDelete(itemId)
