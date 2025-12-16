@@ -41,6 +41,7 @@ const deleteItem = (req, res) => {
     .then((item) => {
       if (!item) {
         const err = "DocumentNotFoundError";
+        err.name = "DocumentNotFoundError";
         return Promise.reject(err);
       }
       console.log("Item owner:", item.owner.toString());
@@ -48,6 +49,7 @@ const deleteItem = (req, res) => {
       console.log("Are they equal?", item.owner.toString() === user);
       if (item.owner.toString() !== user) {
         const err = "ForbiddenError";
+        err.name = "ForbiddenError";
         return Promise.reject(err);
       }
       return ClothingItem.findByIdAndDelete(itemId);
