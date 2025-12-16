@@ -8,4 +8,4 @@ This is the back-end of the WTWR application. It holds the information of the us
 
 `npm run dev` — to launch the server with the hot reload feature
 
-#### Crafted with Love and Devotion by Karilyn Bremiller
+#### Crafted with Love and Devotion (as well as a few tears) by Karilyn Bremiller

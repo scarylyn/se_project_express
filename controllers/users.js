@@ -23,7 +23,7 @@ const createUser = (req, res) => {
   bcrypt
     .hash(req.body.password, 10)
     .then((hash) => User.create({ email, password: hash, name, avatar }))
-    .then((user) => res.status(201).send({ email, name, avatar }))
+    .then(() => res.status(201).send({ email, name, avatar }))
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
@@ -69,7 +69,9 @@ const loginUser = (req, res) => {
   const { email, password } = req.body;
 
   if (!validator.isEmail(email)) {
-    return res.status(400).send({ message: "Invalid email format" });
+    return res
+      .status(ERROR_CODES.BAD_REQUEST)
+      .send({ message: "Invalid email format" });
   }
 
   return User.findUserByCredentials(email, password)
@@ -101,7 +103,9 @@ const updateUser = (req, res) => {
   User.findByIdAndUpdate(userId, { name, avatar }, { new: true })
     .then((user) => {
       if (!user) {
-        return res.status(401).send({ message: "User not found" });
+        return res
+          .status(ERROR_CODES.UNAUTHORIZED)
+          .send({ message: "User not found" });
       }
       return res.status(200).send(user);
     })

@@ -7,7 +7,7 @@ const {
   updateUser,
 } = require("../controllers/users");
 
-// router.get("/", getUsers);
+router.get("/", getUsers);
 
 router.get("/users/me", getCurrentUser);
 router.post("/signup", createUser);
