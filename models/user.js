@@ -44,12 +44,14 @@ userSchema.statics.findUserByCredentials = function (email, password) {
     .then((user) => {
       if (!user) {
         const err = new Error("InvalidCredentials");
+        err.name = "InvalidCredentials";
         err.statusCode = 401;
         return Promise.reject(err);
       }
       return bcrypt.compare(password, user.password).then((matched) => {
         if (!matched) {
           const err = new Error("InvalidCredentials");
+          err.name = "InvalidCredentials";
           err.statusCode = 401;
           return Promise.reject(err);
         }
