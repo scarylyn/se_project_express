@@ -12,7 +12,7 @@ router.get("/", getUsers);
 
 router.post("/signup", createUser);
 router.post("/signin", loginUser);
-router.get("/me", auth, getCurrentUser);
-router.patch("/me", auth, updateUser);
+router.get("/users/me", auth, getCurrentUser);
+router.patch("/users/me", auth, updateUser);
 
 module.exports = router;
