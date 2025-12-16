@@ -43,8 +43,8 @@ const createUser = (req, res) => {
 };
 
 const getCurrentUser = (req, res) => {
-  const { userId } = req.user;
-  User.findById(userId)
+  const { _id } = req.user;
+  User.findById(_id)
     .orFail()
     .then((user) => res.status(200).send(user))
     .catch((err) => {
@@ -103,9 +103,9 @@ const loginUser = (req, res) => {
 
 const updateUser = (req, res) => {
   const { name, avatar } = req.body;
-  const { userId } = req.user;
+  const { _id } = req.user;
 
-  User.findByIdAndUpdate(userId, { name, avatar }, { new: true })
+  User.findByIdAndUpdate(_id, { name, avatar }, { new: true })
     .then((user) => {
       if (!user) {
         return res
