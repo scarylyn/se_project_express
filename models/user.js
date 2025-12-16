@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema({
   password: {
     required: true,
     type: String,
-    // minlength: 8,
+    select: false,
   },
   name: {
     required: true,
@@ -53,6 +53,7 @@ userSchema.statics.findUserByCredentials = function (email, password) {
           err.statusCode = 401;
           return Promise.reject(err);
         }
+        delete user.password;
         return user;
       });
     });

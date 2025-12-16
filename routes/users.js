@@ -3,13 +3,15 @@ const {
   getUsers,
   createUser,
   getCurrentUser,
-  login,
+  loginUser,
+  updateUser,
 } = require("../controllers/users");
 
 // router.get("/", getUsers);
 
 router.get("/users/me", getCurrentUser);
 router.post("/signup", createUser);
-router.post("/signin", login);
+router.post("/signin", loginUser);
+router.patch("/users/me", updateUser);
 
 module.exports = router;

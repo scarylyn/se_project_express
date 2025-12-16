@@ -4,7 +4,12 @@ const mongoose = require("mongoose");
 const app = express();
 const { PORT = 3001 } = process.env;
 const mainRouter = require("./routes/index");
-const { createUser, login, getCurrentUser } = require("./controllers/users");
+const {
+  createUser,
+  loginUser,
+  getCurrentUser,
+  updateUser,
+} = require("./controllers/users");
 
 mongoose
   .connect("mongodb://localhost:27017/wtwr_db")
@@ -15,9 +20,10 @@ mongoose
 
 app.use(express.json());
 
-app.post("/signin", login);
+app.post("/signin", loginUser);
 app.post("/signup", createUser);
 app.get("/users/me", getCurrentUser);
+app.patch("/users/me", updateUser);
 
 app.use("/", mainRouter);
 

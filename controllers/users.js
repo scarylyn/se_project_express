@@ -65,7 +65,7 @@ const getCurrentUser = (req, res) => {
     });
 };
 
-const login = (req, res) => {
+const loginUser = (req, res) => {
   const { email, password } = req.body;
 
   if (!validator.isEmail(email)) {
@@ -94,4 +94,44 @@ const login = (req, res) => {
     });
 };
 
-module.exports = { getUsers, createUser, getCurrentUser, login };
+const updateUser = (req, res) => {
+  const { name, avatar } = req.body;
+  const { userId } = req.user;
+
+  User.findByIdAndUpdate(userId, { name, avatar }, { new: true })
+    .then((user) => {
+      if (!user) {
+        return res.status(401).send({ message: "User not found" });
+      }
+      return res.status(200).send(user);
+    })
+    .catch((err) => {
+      console.error(err);
+      if (err.name === "DocumentNotFoundError") {
+        return res
+          .status(ERROR_CODES.NOT_FOUND)
+          .send({ message: ERROR_MESSAGES.RESOURCE_NOT_FOUND });
+      }
+      if (err.name === "CastError") {
+        return res
+          .status(ERROR_CODES.BAD_REQUEST)
+          .send({ message: ERROR_MESSAGES.INVALID_DATA });
+      }
+      if (err.name === "ValidationError") {
+        return res
+          .status(ERROR_CODES.BAD_REQUEST)
+          .send({ message: ERROR_MESSAGES.INVALID_DATA });
+      }
+      return res
+        .status(ERROR_CODES.INTERNAL_SERVER_ERROR)
+        .send({ message: ERROR_MESSAGES.SERVER_ERROR });
+    });
+};
+
+module.exports = {
+  getUsers,
+  createUser,
+  getCurrentUser,
+  loginUser,
+  updateUser,
+};
