@@ -44,9 +44,6 @@ const deleteItem = (req, res) => {
         err.name = "DocumentNotFoundError";
         return Promise.reject(err);
       }
-      console.log("Item owner:", item.owner.toString());
-      console.log("Current user:", user);
-      console.log("Are they equal?", item.owner.toString() === user);
       if (item.owner.toString() !== user) {
         const err = "ForbiddenError";
         err.name = "ForbiddenError";
