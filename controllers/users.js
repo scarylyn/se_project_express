@@ -89,6 +89,11 @@ const loginUser = (req, res) => {
           .status(ERROR_CODES.BAD_REQUEST)
           .send({ message: ERROR_MESSAGES.INVALID_DATA });
       }
+      if (err.name === "InvalidCredentials") {
+        return res
+          .status(ERROR_CODES.UNAUTHORIZED)
+          .send({ message: ERROR_MESSAGES.INVALID_DATA });
+      }
       console.log(err);
       return res
         .status(ERROR_CODES.INTERNAL_SERVER_ERROR)
