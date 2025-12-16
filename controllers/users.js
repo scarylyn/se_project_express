@@ -81,7 +81,7 @@ const loginUser = (req, res) => {
       if (err.name === "ValidationError") {
         return res
           .status(ERROR_CODES.BAD_REQUEST)
-          .send({ message: ERROR_MESSAGES.INVALID_DATA });
+          .send({ message: ERROR_MESSAGES.DUPLICATE_EMAIL });
       }
       if (err.name === "InvalidCredentials") {
         return res
@@ -98,7 +98,11 @@ const updateUser = (req, res) => {
   const { name, avatar } = req.body;
   const { _id } = req.user;
 
-  User.findByIdAndUpdate(_id, { name, avatar }, { new: true })
+  User.findByIdAndUpdate(
+    _id,
+    { name, avatar },
+    { new: true, runValidators: true }
+  )
     .then((user) => {
       if (!user) {
         return res

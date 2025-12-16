@@ -40,12 +40,12 @@ const deleteItem = (req, res) => {
   ClothingItem.findById(req.params.itemId)
     .then((item) => {
       if (!item) {
-        const err = "DocumentNotFoundError";
+        const err = new Error("DocumentNotFoundError");
         err.name = "DocumentNotFoundError";
         return Promise.reject(err);
       }
       if (item.owner.toString() !== user) {
-        const err = "ForbiddenError";
+        const err = new Error("ForbiddenError");
         err.name = "ForbiddenError";
         return Promise.reject(err);
       }
