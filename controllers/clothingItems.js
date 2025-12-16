@@ -40,13 +40,15 @@ const deleteItem = (req, res) => {
   ClothingItem.findById(req.params.itemId)
     .then((item) => {
       if (!item) {
-        return Promise.reject({ name: "DocumentNotFoundError" });
+        const err = "DocumentNotFoundError";
+        return Promise.reject(err);
       }
       console.log("Item owner:", item.owner.toString());
       console.log("Current user:", user);
       console.log("Are they equal?", item.owner.toString() === user);
       if (item.owner.toString() !== user) {
-        return Promise.reject({ name: "ForbiddenError" });
+        const err = "ForbiddenError";
+        return Promise.reject(err);
       }
       return ClothingItem.findByIdAndDelete(itemId);
     })
