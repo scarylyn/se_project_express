@@ -39,6 +39,26 @@ const userSchema = new mongoose.Schema({
 
 userSchema.statics.findUserByCredentials = function (email, password) {
   const User = this;
+
+  if (!email) {
+    const err = new Error("ValidationError");
+    err.name = "ValidationError";
+    err.statusCode = 400;
+    return Promise.reject(err);
+  }
+  if (!password) {
+    const err = new Error("ValidationError");
+    err.name = "ValidationError";
+    err.statusCode = 400;
+    return Promise.reject(err);
+  }
+  if (!validator.isEmail(email)) {
+    const err = new Error("ValidationError");
+    err.name = "ValidationError";
+    err.statusCode = 400;
+    return Promise.reject(err);
+  }
+
   return User.findOne({ email })
     .select("+password")
     .then((user) => {

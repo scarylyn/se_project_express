@@ -68,12 +68,6 @@ const getCurrentUser = (req, res) => {
 const loginUser = (req, res) => {
   const { email, password } = req.body;
 
-  if (!validator.isEmail(email)) {
-    return res
-      .status(ERROR_CODES.BAD_REQUEST)
-      .send({ message: "Invalid email format" });
-  }
-
   return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign(
@@ -84,6 +78,7 @@ const loginUser = (req, res) => {
       return res.status(200).send({ token });
     })
     .catch((err) => {
+      console.log(err);
       if (err.name === "ValidationError") {
         return res
           .status(ERROR_CODES.BAD_REQUEST)
@@ -94,7 +89,6 @@ const loginUser = (req, res) => {
           .status(ERROR_CODES.UNAUTHORIZED)
           .send({ message: ERROR_MESSAGES.INVALID_DATA });
       }
-      console.log(err);
       return res
         .status(ERROR_CODES.INTERNAL_SERVER_ERROR)
         .send({ message: ERROR_MESSAGES.SERVER_ERROR });
