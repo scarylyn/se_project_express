@@ -30,7 +30,8 @@ const createUser = (req, res) => {
         return res
           .status(ERROR_CODES.BAD_REQUEST)
           .send({ message: ERROR_MESSAGES.INVALID_DATA });
-      } else if (err.code === 11000) {
+      }
+      if (err.code === 11000) {
         return res
           .status(ERROR_CODES.CONFLICT)
           .send({ message: ERROR_MESSAGES.DUPLICATE_EMAIL });
@@ -52,7 +53,8 @@ const getCurrentUser = (req, res) => {
         return res
           .status(ERROR_CODES.NOT_FOUND)
           .send({ message: ERROR_MESSAGES.RESOURCE_NOT_FOUND });
-      } else if (err.name === "CastError") {
+      }
+      if (err.name === "CastError") {
         return res
           .status(ERROR_CODES.BAD_REQUEST)
           .send({ message: ERROR_MESSAGES.INVALID_DATA });
@@ -86,7 +88,8 @@ const loginUser = (req, res) => {
         return res
           .status(ERROR_CODES.BAD_REQUEST)
           .send({ message: ERROR_MESSAGES.INVALID_DATA });
-      } else if (err.name === "InvalidCredentials") {
+      }
+      if (err.name === "InvalidCredentials") {
         return res
           .status(ERROR_CODES.UNAUTHORIZED)
           .send({ message: ERROR_MESSAGES.INVALID_DATA });
@@ -117,11 +120,13 @@ const updateUser = (req, res) => {
         return res
           .status(ERROR_CODES.NOT_FOUND)
           .send({ message: ERROR_MESSAGES.RESOURCE_NOT_FOUND });
-      } else if (err.name === "CastError") {
+      }
+      if (err.name === "CastError") {
         return res
           .status(ERROR_CODES.BAD_REQUEST)
           .send({ message: ERROR_MESSAGES.INVALID_DATA });
-      } else if (err.name === "ValidationError") {
+      }
+      if (err.name === "ValidationError") {
         return res
           .status(ERROR_CODES.BAD_REQUEST)
           .send({ message: ERROR_MESSAGES.INVALID_DATA });
