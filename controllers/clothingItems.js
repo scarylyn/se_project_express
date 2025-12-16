@@ -39,14 +39,25 @@ const deleteItem = (req, res) => {
 
   ClothingItem.findById(req.params.itemId)
     .then((item) => {
-      if (item.owner._id !== user) {
-        return res.status(403).send({ message: "Forbidden" });
+      if (!item) {
+        return Promise.reject({ name: "DocumentNotFoundError" });
+      }
+      console.log("Item owner:", item.owner.toString());
+      console.log("Current user:", user);
+      console.log("Are they equal?", item.owner.toString() === user);
+      if (item.owner.toString() !== user) {
+        return Promise.reject({ name: "ForbiddenError" });
       }
       return ClothingItem.findByIdAndDelete(itemId);
     })
     .then(() => res.status(200).send({}))
     .catch((err) => {
       console.error(err);
+      if (err.name === "ForbiddenError") {
+        return res
+          .status(ERROR_CODES.FORBIDDEN)
+          .send({ message: ERROR_MESSAGES.UNAUTHORIZED_ACCESS });
+      }
       if (err.name === "DocumentNotFoundError") {
         return res
           .status(ERROR_CODES.NOT_FOUND)
