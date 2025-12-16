@@ -104,7 +104,7 @@ const updateUser = (req, res) => {
     .then((user) => {
       if (!user) {
         return res
-          .status(ERROR_CODES.UNAUTHORIZED)
+          .status(ERROR_CODES.NOT_FOUND)
           .send({ message: "User not found" });
       }
       return res.status(200).send(user);

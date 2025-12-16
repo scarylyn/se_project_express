@@ -53,7 +53,6 @@ userSchema.statics.findUserByCredentials = function (email, password) {
           err.statusCode = 401;
           return Promise.reject(err);
         }
-        delete user.password;
         return user;
       });
     });
