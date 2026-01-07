@@ -19,5 +19,5 @@ app.use(cors());
 app.use("/", mainRouter);
 
 app.listen(PORT, () => {
-  console.log("We are up and running");
+  console.log("We are up and running!");
 });
