@@ -2,7 +2,6 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const User = require("../models/user");
-const { ERROR_CODES, ERROR_MESSAGES } = require("../utils/errors");
 const { JWT_SECRET } = require("../utils/config");
 
 const getUsers = (req, res) => {
@@ -10,9 +9,7 @@ const getUsers = (req, res) => {
     .then((users) => res.status(200).send(users))
     .catch((err) => {
       console.error(err);
-      return res
-        .status(ERROR_CODES.INTERNAL_SERVER_ERROR)
-        .send({ message: ERROR_MESSAGES.SERVER_ERROR });
+      next(err);
     });
 };
 
@@ -25,19 +22,7 @@ const createUser = (req, res) => {
     .then(() => res.status(201).send({ email, name, avatar }))
     .catch((err) => {
       console.error(err);
-      if (err.name === "ValidationError") {
-        return res
-          .status(ERROR_CODES.BAD_REQUEST)
-          .send({ message: ERROR_MESSAGES.INVALID_DATA });
-      }
-      if (err.code === 11000) {
-        return res
-          .status(ERROR_CODES.CONFLICT)
-          .send({ message: ERROR_MESSAGES.DUPLICATE_EMAIL });
-      }
-      return res
-        .status(ERROR_CODES.INTERNAL_SERVER_ERROR)
-        .send({ message: ERROR_MESSAGES.SERVER_ERROR });
+      next(err);
     });
 };
 
@@ -49,18 +34,13 @@ const getCurrentUser = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
-        return res
-          .status(ERROR_CODES.NOT_FOUND)
-          .send({ message: ERROR_MESSAGES.RESOURCE_NOT_FOUND });
+        next(new NotFoundError("User not found"));
       }
       if (err.name === "CastError") {
-        return res
-          .status(ERROR_CODES.BAD_REQUEST)
-          .send({ message: ERROR_MESSAGES.INVALID_DATA });
+        next(new BadRequestError("The data provided is invalid"));
+      } else {
+        next(err);
       }
-      return res
-        .status(ERROR_CODES.INTERNAL_SERVER_ERROR)
-        .send({ message: ERROR_MESSAGES.SERVER_ERROR });
     });
 };
 
@@ -78,19 +58,11 @@ const loginUser = (req, res) => {
     })
     .catch((err) => {
       console.error(err);
-      if (err.name === "ValidationError") {
-        return res
-          .status(ERROR_CODES.BAD_REQUEST)
-          .send({ message: ERROR_MESSAGES.INVALID_DATA });
-      }
       if (err.name === "InvalidCredentials") {
-        return res
-          .status(ERROR_CODES.UNAUTHORIZED)
-          .send({ message: ERROR_MESSAGES.INVALID_DATA });
+        next(new UnauthorizedError("The data provided is invalid"));
+      } else {
+        next(err);
       }
-      return res
-        .status(ERROR_CODES.INTERNAL_SERVER_ERROR)
-        .send({ message: ERROR_MESSAGES.SERVER_ERROR });
     });
 };
 
@@ -105,32 +77,20 @@ const updateUser = (req, res) => {
   )
     .then((user) => {
       if (!user) {
-        return res
-          .status(ERROR_CODES.NOT_FOUND)
-          .send({ message: "User not found" });
+        next(new NotFoundError("User not found"));
       }
       return res.send(user);
     })
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
-        return res
-          .status(ERROR_CODES.NOT_FOUND)
-          .send({ message: ERROR_MESSAGES.RESOURCE_NOT_FOUND });
+        next(new NotFoundError("Requested resource not found"));
       }
       if (err.name === "CastError") {
-        return res
-          .status(ERROR_CODES.BAD_REQUEST)
-          .send({ message: ERROR_MESSAGES.INVALID_DATA });
+        next(new BadRequestError("The data provided is invalid"));
+      } else {
+        next(err);
       }
-      if (err.name === "ValidationError") {
-        return res
-          .status(ERROR_CODES.BAD_REQUEST)
-          .send({ message: ERROR_MESSAGES.INVALID_DATA });
-      }
-      return res
-        .status(ERROR_CODES.INTERNAL_SERVER_ERROR)
-        .send({ message: ERROR_MESSAGES.SERVER_ERROR });
     });
 };
 

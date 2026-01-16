@@ -5,6 +5,7 @@ const cors = require("cors");
 const app = express();
 const { PORT = 3001 } = process.env;
 const mainRouter = require("./routes/index");
+const errorHandler = require("./middlewares/error-handler");
 
 mongoose
   .connect("mongodb://localhost:27017/wtwr_db")
@@ -17,6 +18,8 @@ app.use(express.json());
 app.use(cors());
 
 app.use("/", mainRouter);
+
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log("We are up and running!");

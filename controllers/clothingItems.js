@@ -1,5 +1,4 @@
 const ClothingItem = require("../models/clothingItem");
-const { ERROR_CODES, ERROR_MESSAGES } = require("../utils/errors");
 
 const createItem = (req, res) => {
   const { name, weather, imageUrl } = req.body;
@@ -10,15 +9,7 @@ const createItem = (req, res) => {
       res.status(201).send(item);
     })
     .catch((err) => {
-      console.error(err);
-      if (err.name === "ValidationError") {
-        return res
-          .status(ERROR_CODES.BAD_REQUEST)
-          .send({ message: ERROR_MESSAGES.INVALID_DATA });
-      }
-      return res
-        .status(ERROR_CODES.INTERNAL_SERVER_ERROR)
-        .send({ message: ERROR_MESSAGES.SERVER_ERROR });
+      next(err);
     });
 };
 
@@ -26,10 +17,7 @@ const getItems = (req, res) => {
   ClothingItem.find({})
     .then((items) => res.status(200).send(items))
     .catch((err) => {
-      console.error(err);
-      res
-        .status(ERROR_CODES.INTERNAL_SERVER_ERROR)
-        .send({ message: ERROR_MESSAGES.SERVER_ERROR });
+      next(err);
     });
 };
 
@@ -55,23 +43,16 @@ const deleteItem = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "ForbiddenError") {
-        return res
-          .status(ERROR_CODES.FORBIDDEN)
-          .send({ message: ERROR_MESSAGES.UNAUTHORIZED_ACCESS });
+        next(new ForbiddenError("Authorization required"));
       }
       if (err.name === "DocumentNotFoundError") {
-        return res
-          .status(ERROR_CODES.NOT_FOUND)
-          .send({ message: ERROR_MESSAGES.RESOURCE_NOT_FOUND });
+        next(new NotFoundError("Requested resource not found"));
       }
       if (err.name === "CastError") {
-        return res
-          .status(ERROR_CODES.BAD_REQUEST)
-          .send({ message: ERROR_MESSAGES.INVALID_DATA });
+        next(new BadRequestError("The data provided is invalid"));
+      } else {
+        next(err);
       }
-      return res
-        .status(ERROR_CODES.INTERNAL_SERVER_ERROR)
-        .send({ message: ERROR_MESSAGES.SERVER_ERROR });
     });
 };
 
@@ -86,24 +67,14 @@ const likeItem = (req, res) => {
     .then((item) => res.status(200).send(item))
     .catch((err) => {
       console.error(err);
-      if (err.name === "ValidationError") {
-        return res
-          .status(ERROR_CODES.BAD_REQUEST)
-          .send({ message: ERROR_MESSAGES.INVALID_DATA });
-      }
       if (err.name === "DocumentNotFoundError") {
-        return res
-          .status(ERROR_CODES.NOT_FOUND)
-          .send({ message: ERROR_MESSAGES.RESOURCE_NOT_FOUND });
+        next(new NotFoundError("Requested resource not found"));
       }
       if (err.name === "CastError") {
-        return res
-          .status(ERROR_CODES.BAD_REQUEST)
-          .send({ message: ERROR_MESSAGES.INVALID_DATA });
+        next(new BadRequestError("The data provided is invalid"));
+      } else {
+        next(err);
       }
-      return res
-        .status(ERROR_CODES.INTERNAL_SERVER_ERROR)
-        .send({ message: ERROR_MESSAGES.SERVER_ERROR });
     });
 };
 
@@ -117,25 +88,14 @@ const dislikeItem = (req, res) => {
     .orFail()
     .then((item) => res.status(200).send(item))
     .catch((err) => {
-      console.error(err);
-      if (err.name === "ValidationError") {
-        return res
-          .status(ERROR_CODES.BAD_REQUEST)
-          .send({ message: ERROR_MESSAGES.INVALID_DATA });
-      }
       if (err.name === "DocumentNotFoundError") {
-        return res
-          .status(ERROR_CODES.NOT_FOUND)
-          .send({ message: ERROR_MESSAGES.RESOURCE_NOT_FOUND });
+        next(new NotFoundError("Requested resource not found"));
       }
       if (err.name === "CastError") {
-        return res
-          .status(ERROR_CODES.BAD_REQUEST)
-          .send({ message: ERROR_MESSAGES.INVALID_DATA });
+        next(new BadRequestError("The data provided is invalid"));
+      } else {
+        next(err);
       }
-      return res
-        .status(ERROR_CODES.INTERNAL_SERVER_ERROR)
-        .send({ message: ERROR_MESSAGES.SERVER_ERROR });
     });
 };
 
