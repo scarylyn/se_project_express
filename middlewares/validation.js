@@ -8,12 +8,7 @@ const validateURL = (value, helpers) => {
   return helpers.error("string.uri");
 };
 
-// define functions that will validate!
-
-// clothing item body on item creation:
-// - item name is required string between 2 - 30 characters
-// - image url is required string in url format
-// they gracefully gave us this answer to work off for the rest <3
+// validates clothing item body on item creation
 module.exports.validateCardBody = celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30).messages({
@@ -29,11 +24,7 @@ module.exports.validateCardBody = celebrate({
   }),
 });
 
-// user info body on user creation:
-// - name is string between 2 - 30 characters
-// - avatar is required string in url format
-// - email is required string in valid email format
-// - password is required string
+// validates user info body on user creation
 module.exports.validateUserInfo = celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30).messages({
@@ -58,9 +49,7 @@ module.exports.validateUserInfo = celebrate({
   }),
 });
 
-// user log in:
-// - email required string valid email format
-// - password required string
+// validates user log in
 module.exports.validateUserLogin = celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email().messages({
@@ -74,13 +63,9 @@ module.exports.validateUserLogin = celebrate({
   }),
 });
 
-// user and clothing item ID when accessed
-// - ids must be hexadecimal value length of 24 characters
-// - On top of validating the request body, celebrate also allows
-// you to validate headers, parameters, or req.query. Use parameters
-// to extract and validate the item and user IDs:
+// validates user and clothing item ID when accessed
 module.exports.validateId = celebrate({
   params: Joi.object().keys({
-    id: Joi.number().integer().length(24),
+    id: Joi.string().integer().length(24),
   }),
 });
