@@ -58,7 +58,7 @@ const loginUser = (req, res, next) => {
         process.env.JWT_SECRET || JWT_SECRET,
         { expiresIn: "7d" }
       );
-      return res.status(200).send({ token, user });
+      return res.send({ token });
     })
     .catch((err) => {
       console.error(err);

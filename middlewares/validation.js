@@ -1,5 +1,6 @@
 const { Joi, celebrate } = require("celebrate");
 const validator = require("validator");
+const { ObjectId } = require("mongoose").Types;
 
 const validateURL = (value, helpers) => {
   if (validator.isURL(value)) {
@@ -20,6 +21,10 @@ module.exports.validateCardBody = celebrate({
     imageUrl: Joi.string().required().custom(validateURL).messages({
       "string.empty": 'The "imageUrl" field must be filled in',
       "string.uri": 'the "imageUrl" field must be a valid url',
+    }),
+
+    weather: Joi.string().required().valid("hot", "warm", "cold").messages({
+      "string.empty": "You must choose a weather type",
     }),
   }),
 });
@@ -66,6 +71,14 @@ module.exports.validateUserLogin = celebrate({
 // validates user and clothing item ID when accessed
 module.exports.validateId = celebrate({
   params: Joi.object().keys({
-    id: Joi.string().integer().length(24),
+    itemId: Joi.string()
+      .required()
+      .length(24)
+      .custom((value, helpers) => {
+        if (ObjectId.isValid(value)) {
+          return value;
+        }
+        return helpers.message("Invalid Id");
+      }),
   }),
 });
