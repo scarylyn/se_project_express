@@ -2,7 +2,9 @@
 
 This is the back-end of the WTWR application. It holds the information of the user, what clothing items they've saved, and which of those clothing items they've liked.
 
-## The Deployed Project - frcstclst.home.kg
+## The Deployed Project -
+
+### frcstclst.home.kg | www.frcstclst.home.kg | api.frcstclst.home.kg
 
 [This](https://github.com/scarylyn/se_project_react) is where you can find the frontend of this project.
 
