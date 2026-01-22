@@ -11,7 +11,7 @@ const { validateCardBody, validateId } = require("../middlewares/validation");
 
 router.post("/", auth, validateCardBody, createItem);
 
-router.get("/", validateCardBody, getItems);
+router.get("/", getItems);
 
 router.put("/:itemId/likes", auth, validateId, likeItem);
 
